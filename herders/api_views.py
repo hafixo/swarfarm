@@ -77,7 +77,7 @@ class GlobalRuneInstanceViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class ProfileItemMixin(viewsets.GenericViewSet):
-    pagination_class = ProfileItemPagination
+    pagination_class = PublicListPagination
     permission_classes = [IsOwner]
 
     def get_queryset(self):
@@ -125,8 +125,6 @@ class MonsterInstanceViewSet(ProfileItemMixin, viewsets.ModelViewSet):
     ).prefetch_related(
         'default_build__runes',
         'rta_build__runes',
-        'runeinstance_set',
-        'runeinstance_set__owner__user',
     )
     serializer_class = MonsterInstanceSerializer
     filter_backends = (filters.DjangoFilterBackend, OrderingFilter)
@@ -186,7 +184,6 @@ class RuneInstanceViewSet(ProfileItemMixin, viewsets.ModelViewSet):
         'assigned_to',
     )
     serializer_class = RuneInstanceSerializer
-    # renderer_classes = [JSONRenderer]  # Browseable API causes major query explosion when trying to generate form options.
     filter_backends = (filters.DjangoFilterBackend, OrderingFilter)
     filter_class = RuneInstanceFilter
     ordering_fields = (
@@ -204,10 +201,6 @@ class RuneInstanceViewSet(ProfileItemMixin, viewsets.ModelViewSet):
 
 
 class RuneCraftInstanceViewSet(ProfileItemMixin, viewsets.ModelViewSet):
-    queryset = RuneCraftInstance.objects.all().select_related(
-        'owner',
-        'owner__user',
-    )
     serializer_class = RuneCraftInstanceSerializer
 
 

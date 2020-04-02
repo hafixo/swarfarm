@@ -144,7 +144,7 @@ if env('BUGSNAG_API_KEY'):
     BUGSNAG = {
         'api_key': env('BUGSNAG_API_KEY'),
         'project_root': BASE_DIR,
-        'ignore_classes': ["django.http.response.Http404",],
+        'ignore_classes': ["django.http.response.Http404", ],
     }
 
 # URL stuff
@@ -251,7 +251,7 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
-        'rest_framework.renderers.BrowsableAPIRenderer',
+        'apiv2.renderers.NoFormBrowsableAPIRenderer',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
