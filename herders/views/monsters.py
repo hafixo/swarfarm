@@ -368,12 +368,7 @@ def monster_instance_view_runes(request, profile_name, instance_id):
         return HttpResponseBadRequest()
 
     instance_runes = [
-        instance.runeinstance_set.filter(slot=1).first(),
-        instance.runeinstance_set.filter(slot=2).first(),
-        instance.runeinstance_set.filter(slot=3).first(),
-        instance.runeinstance_set.filter(slot=4).first(),
-        instance.runeinstance_set.filter(slot=5).first(),
-        instance.runeinstance_set.filter(slot=6).first(),
+        instance.default_build.runes.filter(slot=x+1).first() for x in range(6)
     ]
 
     context = {
@@ -481,15 +476,13 @@ def monster_instance_remove_runes(request, profile_name, instance_id):
 
     if is_owner:
         try:
-            instance = MonsterInstance.objects.get(pk=instance_id)
+            instance = MonsterInstance.objects.select_related(
+                'default_build',
+            ).get(pk=instance_id)
         except ObjectDoesNotExist:
             return HttpResponseBadRequest()
         else:
-            for rune in instance.runeinstance_set.all():
-                rune.assigned_to = None
-                rune.save()
-
-            instance.save()
+            instance.default_build.runes.clear()
             messages.success(request, 'Removed all runes from ' + str(instance))
             response_data = {
                 'code': 'success',
@@ -862,6 +855,16 @@ def monster_instance_duplicate(request, profile_name, instance_id):
         return JsonResponse(response_data)
     else:
         return HttpResponseForbidden()
+
+
+@username_case_redirect
+@login_required
+def add_rune_to_build(request, profile_name, instance_id, rune_build_id, rune_id):
+    monster = get_object_or_404(MonsterInstance, pk=instance_id)
+
+    if request.user.summoner != monster.owner:
+        return HttpResponseForbidden()
+
 
 
 @username_case_redirect

@@ -368,18 +368,9 @@ def rune_assign_choice(request, profile_name, instance_id, rune_id):
     monster = get_object_or_404(MonsterInstance, pk=instance_id)
     rune = get_object_or_404(RuneInstance, pk=rune_id)
 
-    if rune.assigned_to is not None:
-        # TODO: Warn about removing from other monster?
-        pass
-
-    # Check for existing rune.
-    existing_runes = monster.runeinstance_set.filter(slot=rune.slot)
-    for existing_rune in existing_runes:
-        existing_rune.assigned_to = None
-
-    rune.assigned_to = monster
-    rune.save()
-    monster.save()
+    # Remove existing rune in slot
+    monster.default_build.runes.remove(*monster.default_build.runes.filter(slot=rune.slot))
+    monster.default_build.runes.add(rune)
 
     response_data = {
         'code': 'success',
@@ -400,6 +391,7 @@ def rune_unassign(request, profile_name, rune_id):
     is_owner = (request.user.is_authenticated and summoner.user == request.user)
 
     if is_owner:
+
         mon = rune.assigned_to
         rune.assigned_to = None
         rune.save()
