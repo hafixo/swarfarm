@@ -1,19 +1,13 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="/static/herders/images/dungeons/unit_icon_0051_0_1.png" />
-
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+    This is where I'd display the monster data
   </div>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
-
 export default {
-  name: "App",
-  components: {
-    HelloWorld
-  }
+  name: "App"
 };
 </script>
 

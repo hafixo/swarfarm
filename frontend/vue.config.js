@@ -1,8 +1,8 @@
 const BundleTracker = require('webpack-bundle-tracker');
 
 const pages = {
-  vue_app_01: {
-    entry: './src/main.js',
+  monster_view: {
+    entry: './src/pages/monster_view/main.js',
     chunks: ['chunk-vendors']
   }
 };
