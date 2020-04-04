@@ -1,0 +1,11 @@
+{% extends 'herders/profile/base.html' %}
+{% load render_bundle from webpack_loader %}
+
+{% block profile %}
+<div id="app">
+  <app></app>
+</div>
+
+{% render_bundle 'chunk-vendors' %}
+{% render_bundle 'vue_app_01' %}
+{% endblock profile %}

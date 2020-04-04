@@ -624,3 +624,20 @@ def export_win10_optimizer(request, profile_name):
     response['Content-Disposition'] = f'attachment; filename={request.user.username}_swarfarm_win10_optimizer_export.json'
 
     return response
+
+
+def test_vue(request, profile_name):
+    try:
+        summoner = Summoner.objects.select_related('user').get(user__username=profile_name)
+    except Summoner.DoesNotExist:
+        return render(request, 'herders/profile/not_found.html')
+
+    is_owner = (request.user.is_authenticated and summoner.user == request.user)
+
+    context = {
+        'summoner': summoner,
+        'is_owner': is_owner,
+        'profile_name': profile_name,
+    }
+    return render(request, 'herders/profile/vue_test.html', context)
+
