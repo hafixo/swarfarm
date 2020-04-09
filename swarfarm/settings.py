@@ -225,7 +225,7 @@ FRONTEND_DIR = os.path.join(BASE_DIR, 'frontend')
 WEBPACK_LOADER = {
     'DEFAULT': {
         'CACHE': not DEBUG,
-        'BUNDLE_DIR_NAME': 'vue/',
+        'BUNDLE_DIR_NAME': 'frontend/',
         'POLL_INTERVAL': 0.1,
         'TIMEOUT': None,
         'IGNORE': [r'.+\.hot-update.js', r'.+\.map']
@@ -237,7 +237,7 @@ if DEBUG:
     WEBPACK_LOADER['DEFAULT']['STATS_FILE'] = os.path.join(FRONTEND_DIR, 'webpack-stats.json')
 else:
     # Built file in static folder
-    WEBPACK_LOADER['DEFAULT']['STATS_FILE'] = os.path.join(STATIC_ROOT, 'vue', 'webpack-stats-prod.json')
+    WEBPACK_LOADER['DEFAULT']['STATS_FILE'] = os.path.join(STATIC_ROOT, FRONTEND_DIR, 'webpack-stats-prod.json')
 
 # I18n
 LANGUAGE_CODE = 'en-us'

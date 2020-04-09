@@ -3,8 +3,8 @@ const BundleTracker = require('webpack-bundle-tracker');
 const pages = {
   monster_view: {
     entry: './src/pages/monster_view/main.js',
-    chunks: ['chunk-vendors']
-  }
+    chunks: ['chunk-vendors'],
+  },
 };
 
 module.exports = {
@@ -12,28 +12,28 @@ module.exports = {
   filenameHashing: false,
   productionSourceMap: false,
   publicPath: process.env.NODE_ENV === 'production' ? '' : 'http://localhost:8080/',
-  outputDir: '../static/vue/',
+  outputDir: '../static/frontend/',
 
-  chainWebpack: config => {
+  chainWebpack: (config) => {
     config.optimization.splitChunks({
       cacheGroups: {
         vendor: {
           test: /[\\/]node_modules[\\/]/,
           name: 'chunk-vendors',
           chunks: 'all',
-          priority: 1
-        }
-      }
+          priority: 1,
+        },
+      },
     });
 
-    Object.keys(pages).forEach(page => {
+    Object.keys(pages).forEach((page) => {
       config.plugins.delete(`html-${page}`);
       config.plugins.delete(`preload-${page}`);
       config.plugins.delete(`prefetch-${page}`);
     });
 
     if (process.env.NODE_ENV === 'production') {
-      config.plugin('BundleTracker').use(BundleTracker, [{ filename: '../static/vue/webpack-stats-prod.json' }]);
+      config.plugin('BundleTracker').use(BundleTracker, [{ filename: '../static/frontend/webpack-stats-prod.json' }]);
     } else {
       config.plugin('BundleTracker').use(BundleTracker, [{ filename: '../frontend/webpack-stats.json' }]);
     }
@@ -46,5 +46,5 @@ module.exports = {
       .watchOptions({ poll: 1000 })
       .https(false)
       .headers({ 'Access-Control-Allow-Origin': ['*'] });
-  }
+  },
 };
