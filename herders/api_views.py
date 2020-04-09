@@ -126,7 +126,6 @@ class MonsterInstanceViewSet(ProfileItemMixin, viewsets.ModelViewSet):
         'default_build__runes',
         'rta_build__runes',
     )
-    serializer_class = MonsterInstanceSerializer
     filter_backends = (filters.DjangoFilterBackend, OrderingFilter)
     filter_class = MonsterInstanceFilter
     ordering_fields = (
@@ -176,6 +175,15 @@ class MonsterInstanceViewSet(ProfileItemMixin, viewsets.ModelViewSet):
         'monster__max_lvl_attack',
         'monster__max_lvl_defense',
     )
+
+    def get_serializer_class(self):
+        profile_name = self.kwargs.get('pk')
+        is_authorized = self.request.user.username == profile_name
+
+        if (is_authorized or self.request.user.is_superuser) or self.action == 'create':
+            return MonsterInstanceSerializer
+        else:
+            return PublicMonsterInstanceSerializer
 
 
 class RuneInstanceViewSet(ProfileItemMixin, viewsets.ModelViewSet):

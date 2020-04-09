@@ -3,6 +3,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from rest_framework_nested.relations import NestedHyperlinkedIdentityField
 
+from bestiary.serializers import MonsterSerializer
 from herders.models import Summoner, Storage, BuildingInstance, MonsterInstance, MonsterPiece, RuneInstance, \
     RuneCraftInstance, TeamGroup, Team, RuneBuild
 
@@ -58,12 +59,25 @@ class RuneCraftInstanceSerializer(serializers.ModelSerializer, AddOwnerOnCreate)
         )
 
 
-class MonsterInstanceSerializer(serializers.ModelSerializer, AddOwnerOnCreate):
+class PublicMonsterInstanceSerializer(serializers.ModelSerializer):
     # default_build = RuneBuildSerializer(read_only=True)
     # rta_build = RuneBuildSerializer(read_only=True)
+    monster = MonsterSerializer(read_only=True)
 
     class Meta:
         model = MonsterInstance
+        fields = [
+            'id', 'com2us_id', 'monster', 'custom_name',
+            'stars', 'level', 'skill_1_level', 'skill_2_level', 'skill_3_level', 'skill_4_level',
+            'base_hp', 'base_attack', 'base_defense', 'base_speed', 'base_crit_rate', 'base_crit_damage', 'base_resistance', 'base_accuracy',
+            'rune_hp', 'rune_attack', 'rune_defense', 'rune_speed', 'rune_crit_rate', 'rune_crit_damage', 'rune_resistance', 'rune_accuracy',
+            'default_build', 'rta_build',
+            'fodder', 'in_storage', 'ignore_for_fusion', 'priority', 'notes',
+        ]
+
+
+class MonsterInstanceSerializer(PublicMonsterInstanceSerializer, AddOwnerOnCreate):
+    class Meta(PublicMonsterInstanceSerializer.Meta):
         fields = [
             'id', 'com2us_id', 'created', 'monster', 'custom_name',
             'stars', 'level', 'skill_1_level', 'skill_2_level', 'skill_3_level', 'skill_4_level',
