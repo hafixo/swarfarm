@@ -10,7 +10,6 @@ from bestiary import api_filters, models, pagination, serializers
 class MonsterViewSet(CacheResponseMixin, viewsets.ReadOnlyModelViewSet):
     queryset = models.Monster.objects.all().select_related('leader_skill').prefetch_related(
         'skills',
-        'skills__effect',
         'homunculusskill_set',
         'source',
         'monstercraftcost_set',

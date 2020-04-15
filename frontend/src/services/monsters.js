@@ -17,9 +17,30 @@ export const archetype = {
 export const maxLevelFromStars = (stars) => 10 + stars * 5;
 export const isMaxLevel = (stars, level) => level === maxLevelFromStars(stars);
 
-export default {
-  awakenLevel,
-  archetype,
-  maxLevelFromStars,
-  isMaxLevel,
+export const getFamilyIds = (family_id) => {
+  console.log(family_id);
+  // Special case handling for certain monsters which can skill up from many monster families
+  if (family_id == 23000) {
+    switch (family_id) {
+      // Vampire Lord
+      case 23000:
+        return [23000, 14700];
+
+      // Fairy Queen
+      case 19100:
+        return [19100, 10100];
+
+      // All other monsters
+      default:
+        return [family_id];
+    }
+  }
 };
+
+// export default {
+//   awakenLevel,
+//   archetype,
+//   maxLevelFromStars,
+//   isMaxLevel,
+//   getFamilyIds,
+// };

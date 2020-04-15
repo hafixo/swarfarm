@@ -5,7 +5,7 @@ from rest_framework_nested.relations import NestedHyperlinkedIdentityField
 
 from bestiary.serializers import MonsterSerializer
 from herders.models import Summoner, Storage, BuildingInstance, MonsterInstance, MonsterPiece, RuneInstance, \
-    RuneCraftInstance, TeamGroup, Team, RuneBuild
+    RuneCraftInstance, TeamGroup, Team, RuneBuild, MonsterTag
 
 
 class AddOwnerOnCreate:
@@ -14,15 +14,10 @@ class AddOwnerOnCreate:
 
 
 class RuneInstanceSerializer(serializers.ModelSerializer, AddOwnerOnCreate):
-    url = NestedHyperlinkedIdentityField(
-        view_name='profile/runes-detail',
-        parent_lookup_kwargs={'user_pk': 'owner__user__username'},
-    )
-
     class Meta:
         model = RuneInstance
         fields = [
-            'id', 'url', 'com2us_id', 'assigned_to',
+            'id', 'com2us_id', 'assigned_to',
             'type', 'slot', 'stars', 'level', 'quality', 'original_quality', 'value',
             'substat_upgrades_remaining', 'efficiency', 'max_efficiency',
             'main_stat', 'main_stat_value',
@@ -59,15 +54,24 @@ class RuneCraftInstanceSerializer(serializers.ModelSerializer, AddOwnerOnCreate)
         )
 
 
+class MonsterInstanceTagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MonsterTag
+        fields = (
+            'id',
+            'name',
+        )
+
+
 class PublicMonsterInstanceSerializer(serializers.ModelSerializer):
-    # default_build = RuneBuildSerializer(read_only=True)
-    # rta_build = RuneBuildSerializer(read_only=True)
-    monster = MonsterSerializer(read_only=True)
+    default_build = RuneBuildSerializer(read_only=True)
+    rta_build = RuneBuildSerializer(read_only=True)
+    tags = MonsterInstanceTagSerializer(many=True)
 
     class Meta:
         model = MonsterInstance
         fields = [
-            'id', 'com2us_id', 'monster', 'custom_name',
+            'id', 'com2us_id', 'monster', 'custom_name', 'tags',
             'stars', 'level', 'skill_1_level', 'skill_2_level', 'skill_3_level', 'skill_4_level',
             'base_hp', 'base_attack', 'base_defense', 'base_speed', 'base_crit_rate', 'base_crit_damage', 'base_resistance', 'base_accuracy',
             'rune_hp', 'rune_attack', 'rune_defense', 'rune_speed', 'rune_crit_rate', 'rune_crit_damage', 'rune_resistance', 'rune_accuracy',
@@ -78,14 +82,7 @@ class PublicMonsterInstanceSerializer(serializers.ModelSerializer):
 
 class MonsterInstanceSerializer(PublicMonsterInstanceSerializer, AddOwnerOnCreate):
     class Meta(PublicMonsterInstanceSerializer.Meta):
-        fields = [
-            'id', 'com2us_id', 'created', 'monster', 'custom_name',
-            'stars', 'level', 'skill_1_level', 'skill_2_level', 'skill_3_level', 'skill_4_level',
-            'base_hp', 'base_attack', 'base_defense', 'base_speed', 'base_crit_rate', 'base_crit_damage', 'base_resistance', 'base_accuracy',
-            'rune_hp', 'rune_attack', 'rune_defense', 'rune_speed', 'rune_crit_rate', 'rune_crit_damage', 'rune_resistance', 'rune_accuracy',
-            'default_build', 'rta_build',
-            'fodder', 'in_storage', 'ignore_for_fusion', 'priority', 'notes',
-        ]
+        fields = PublicMonsterInstanceSerializer.Meta.fields + ['created']
 
 
 class MonsterPieceSerializer(serializers.ModelSerializer, AddOwnerOnCreate):

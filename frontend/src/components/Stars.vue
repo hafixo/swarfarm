@@ -1,55 +1,45 @@
 <template>
   <span>
-    <img
-      v-for="i in count"
-      :key="i"
-      :src="imageUrl"
-      :class="`monster-star monster-star-${i}`"
-      alt="star"
-    />
+    <img v-for="i in count" :key="i" :src="imageUrl" :class="`monster-star monster-star-${i}`" alt="star" />
   </span>
 </template>
 
 <script>
-import Monster from "@/services/monsters";
+import { awakenLevel } from '@/services/monsters';
 
 export default {
   props: {
     count: {
       type: Number,
-      default: 1
+      default: 1,
     },
     awakenLevel: {
       type: Number,
-      default: Monster.awakenLevel.unawakened
+      default: awakenLevel.unawakened,
     },
     canAwaken: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   computed: {
     imageUrl() {
-      const baseUrl = "/static/herders/images/stars";
+      const baseUrl = '/static/herders/images/stars';
 
       switch (this.awakenLevel) {
-        case Monster.awakenLevel.incomplete:
+        case awakenLevel.incomplete:
           return `${baseUrl}/star-incomplete.png`;
-        case Monster.awakenLevel.unawakened:
-          if (this.canAwaken) {
-            return `${baseUrl}/star-unawakened.png`;
-          } else {
-            return `${baseUrl}/star-fodder.png`;
-          }
-        case Monster.awakenLevel.awakened:
+        case awakenLevel.unawakened:
+          return this.canAwaken ? `${baseUrl}/star-unawakened.png` : `${baseUrl}/star-fodder.png`;
+        case awakenLevel.awakened:
           return `${baseUrl}/star-awakened.png`;
-        case Monster.awakenLevel.second:
+        case awakenLevel.second:
           return `${baseUrl}/star-awakened2.png`;
         default:
           return `${baseUrl}/star-fodder.png`;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

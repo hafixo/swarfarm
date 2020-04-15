@@ -123,6 +123,7 @@ class MonsterInstanceViewSet(ProfileItemMixin, viewsets.ModelViewSet):
         'default_build',
         'rta_build'
     ).prefetch_related(
+        'tags',
         'default_build__runes',
         'rta_build__runes',
     )
