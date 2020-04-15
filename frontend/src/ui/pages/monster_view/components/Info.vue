@@ -95,8 +95,8 @@
 
 <script>
 import api from '@/services/api';
-import { Portrait } from '@/components/monsters';
-import { ItemIcon } from '@/components/items';
+import { Portrait } from '@/ui/components/monsters';
+import { ItemIcon } from '@/ui/components/items';
 import { getFamilyIds } from '@/services/monsters';
 import { priorityDisplay } from '@/services/monster_instances';
 

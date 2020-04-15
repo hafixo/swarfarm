@@ -2,7 +2,7 @@ const BundleTracker = require('webpack-bundle-tracker');
 
 const pages = {
   monster_view: {
-    entry: './src/pages/monster_view/main.js',
+    entry: './src/ui/pages/monster_view/main.js',
     chunks: ['chunk-vendors'],
   },
 };
