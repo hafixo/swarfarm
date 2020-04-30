@@ -21,7 +21,10 @@
         </h1>
         <h1 v-else>{{ monster.name }}</h1>
         <p class="lead">
-          <img :src="`/static/herders/images/elements/${monster.element.toLowerCase()}.png`" style="height:1em" />
+          <img
+            :src="`/static/herders/images/elements/${monster.element.toLowerCase()}.png`"
+            style="height:1em"
+          />
           {{ monster.archetype }}
         </p>
       </div>
@@ -58,7 +61,7 @@
         <tr v-if="instance.tags.length">
           <td>Tags</td>
           <td>
-            <span v-for="tag in instance.tags" :key="tag.id" class="tag">{{ tag.name }}</span>
+            <Tag v-for="tag in instance.tags" :key="tag.id">{{ tag.name }}</Tag>
           </td>
         </tr>
 
@@ -73,9 +76,7 @@
         <tr v-if="skill_ups_remaining">
           <td>Skills to Max:</td>
           <td>
-            <template v-if="skill_ups_remaining > 0">
-              {{ skill_ups_remaining }}
-            </template>
+            <template v-if="skill_ups_remaining > 0">{{ skill_ups_remaining }}</template>
             <template v-else>
               <p class="list-group-item-text">None!</p>
             </template>
@@ -94,57 +95,52 @@
 </template>
 
 <script>
-import api from '@/services/api';
-import { Portrait } from '@/ui/components/monsters';
-import { ItemIcon } from '@/ui/components/items';
-import { getFamilyIds } from '@/services/monsters';
-import { priorityDisplay } from '@/services/monster_instances';
+import { mapActions } from "vuex";
+
+import Tag from "@/ui/components/Tag";
+import { Portrait } from "@/ui/components/monsters";
+import { ItemIcon } from "@/ui/components/items";
+import { priorityDisplay } from "@/services/monster_instances";
 
 export default {
   props: {
     owner: { type: String, required: true },
     instance: { type: Object, required: true },
-    monster: { type: Object, required: true },
-    skill_ups_remaining: { type: Number, required: false },
-  },
-  data() {
-    return {
-      awakensTo: null,
-      family: null,
-    };
+    skill_ups_remaining: { type: Number, required: false }
   },
   components: {
     Portrait,
     ItemIcon,
+    Tag
   },
   created() {
     this.fetchData();
   },
   computed: {
     priority() {
-      if (this.monster.priority) {
+      if (this.instance.priority) {
         return priorityDisplay[this.monster.priority];
       } else {
         return null;
       }
     },
+    monster() {
+      return this.instance.monster;
+    },
+    awakensTo() {
+      return this.$store.getters["bestiary/monster"](this.monster.awakens_to);
+    },
+    family() {
+      return this.$store.getters["profile/family"];
+    }
   },
   methods: {
-    fetchData() {
-      this.getAwakensTo();
-      this.getPossibleSkillUps();
-    },
-    async getAwakensTo() {
-      if (this.monster.awakens_to) {
-        this.awakensTo = await api.get(`monsters/${this.monster.awakens_to}/`);
-      }
-    },
-    async getPossibleSkillUps() {
-      const family_ids = getFamilyIds(this.monster.family_id).join(',');
-      const response = await api.get(`profiles/${this.owner}/monsters/?monster__family_id__in=${family_ids}`);
-      this.family = response.results.filter((m) => m.id !== this.instance.id);
-    },
-  },
+    ...mapActions("profile", ["fetchFamily"]),
+    ...mapActions("bestiary", ["getMonster"]),
+    async fetchData() {
+      await this.fetchFamily({ id: this.instance.id });
+    }
+  }
 };
 </script>
 

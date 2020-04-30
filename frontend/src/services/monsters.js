@@ -18,7 +18,6 @@ export const maxLevelFromStars = (stars) => 10 + stars * 5;
 export const isMaxLevel = (stars, level) => level === maxLevelFromStars(stars);
 
 export const getFamilyIds = (family_id) => {
-  console.log(family_id);
   // Special case handling for certain monsters which can skill up from many monster families
   if (family_id == 23000) {
     switch (family_id) {
@@ -36,11 +35,3 @@ export const getFamilyIds = (family_id) => {
     }
   }
 };
-
-// export default {
-//   awakenLevel,
-//   archetype,
-//   maxLevelFromStars,
-//   isMaxLevel,
-//   getFamilyIds,
-// };

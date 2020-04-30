@@ -1,7 +1,8 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
+import Vue from "vue";
+import Vuex from "vuex";
 
-import profile from './profile/store';
+import bestiary from "./bestiary/store";
+import profile from "./profile/store";
 
 Vue.use(Vuex);
 
@@ -9,5 +10,5 @@ export default new Vuex.Store({
   state: {},
   mutations: {},
   actions: {},
-  modules: { profile },
+  modules: { bestiary, profile },
 });

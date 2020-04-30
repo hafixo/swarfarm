@@ -1,9 +1,9 @@
-const BundleTracker = require('webpack-bundle-tracker');
+const BundleTracker = require("webpack-bundle-tracker");
 
 const pages = {
   monster_view: {
-    entry: './src/ui/pages/monster_view/main.js',
-    chunks: ['chunk-vendors'],
+    entry: "./src/ui/pages/monster_view/main.js",
+    chunks: ["chunk-vendors"],
   },
 };
 
@@ -11,40 +11,51 @@ module.exports = {
   pages: pages,
   filenameHashing: false,
   productionSourceMap: false,
-  publicPath: process.env.NODE_ENV === 'production' ? '' : 'http://localhost:8080/',
-  outputDir: '../static/frontend/',
+  publicPath:
+    process.env.NODE_ENV === "production" ? "" : "http://localhost:8080/",
+  outputDir: "../static/frontend/",
 
-  chainWebpack: (config) => {
+  configureWebpack: {
+    devtool: "source-map",
+  },
+
+  chainWebpack: config => {
     config.optimization.splitChunks({
       cacheGroups: {
         vendor: {
           test: /[\\/]node_modules[\\/]/,
-          name: 'chunk-vendors',
-          chunks: 'all',
+          name: "chunk-vendors",
+          chunks: "all",
           priority: 1,
         },
       },
     });
 
-    Object.keys(pages).forEach((page) => {
+    Object.keys(pages).forEach(page => {
       config.plugins.delete(`html-${page}`);
       config.plugins.delete(`preload-${page}`);
       config.plugins.delete(`prefetch-${page}`);
     });
 
-    if (process.env.NODE_ENV === 'production') {
-      config.plugin('BundleTracker').use(BundleTracker, [{ filename: '../static/frontend/webpack-stats-prod.json' }]);
+    if (process.env.NODE_ENV === "production") {
+      config
+        .plugin("BundleTracker")
+        .use(BundleTracker, [
+          { filename: "../static/frontend/webpack-stats-prod.json" },
+        ]);
     } else {
-      config.plugin('BundleTracker').use(BundleTracker, [{ filename: '../frontend/webpack-stats.json' }]);
+      config
+        .plugin("BundleTracker")
+        .use(BundleTracker, [{ filename: "../frontend/webpack-stats.json" }]);
     }
 
     config.devServer
-      .public('http://localhost:8080')
-      .host('localhost')
+      .public("http://localhost:8080")
+      .host("localhost")
       .port(8080)
       .hotOnly(true)
       .watchOptions({ poll: 1000 })
       .https(false)
-      .headers({ 'Access-Control-Allow-Origin': ['*'] });
+      .headers({ "Access-Control-Allow-Origin": ["*"] });
   },
 };
