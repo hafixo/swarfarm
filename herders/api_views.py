@@ -119,6 +119,8 @@ class RuneBuildViewSet(ProfileItemMixin, viewsets.ModelViewSet):
 
 class MonsterInstanceViewSet(ProfileItemMixin, viewsets.ModelViewSet):
     queryset = MonsterInstance.objects.all().select_related(
+        'owner',
+        'owner__user',
         'monster',
         'default_build',
         'rta_build'
