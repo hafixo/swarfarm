@@ -85,10 +85,17 @@
 
         <tr v-if="skill_ups_remaining">
           <td>Possible Skill-Ups</td>
-          <td></td>
+          <td>
+            <SmallPortrait
+              v-for="fam in family"
+              :key="fam.id"
+              :monster="fam.monster"
+              :stars="fam.stars"
+              :level="fam.level"
+              :locked="fam.ignore_for_fusion"
+            />
+          </td>
         </tr>
-
-        <!-- TODO: Possible skill-ups -->
       </tbody>
     </table>
   </div>
@@ -98,7 +105,7 @@
 import { mapActions } from "vuex";
 
 import Tag from "@/ui/components/Tag";
-import { Portrait } from "@/ui/components/monsters";
+import { Portrait, SmallPortrait } from "@/ui/components/monsters";
 import { ItemIcon } from "@/ui/components/items";
 import { priorityDisplay } from "@/services/monster_instances";
 
@@ -110,6 +117,7 @@ export default {
   },
   components: {
     Portrait,
+    SmallPortrait,
     ItemIcon,
     Tag
   },

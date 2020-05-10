@@ -44,6 +44,7 @@ const actions = {
     // Fetch monster
     const monster = await api.get(`monsters/${id}/`);
     commit("updateEntities", normalize(monster, schema.monster));
+
     return monster;
   },
 };

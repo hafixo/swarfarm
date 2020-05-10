@@ -28,3 +28,4 @@ yarn-error.log*
 
 # Local dev webpack
 /frontend/webpack-stats.json
+celery.log

@@ -62,24 +62,24 @@ const actions = {
     id = id || state.monsterInstanceId;
 
     const monster_instance = getters.monsterInstance(id);
-    console.log(id, monster_instance);
-    const { results: family_results } = await api.get(
-      `profiles/${profileName}/monsters/`,
-      {
-        monster__family_id__in: getFamilyIds(
-          monster_instance.monster.family_id
-        ).join(","),
-      }
-    );
+    const family_ids = getFamilyIds(monster_instance.monster.family_id);
+
+    const response = await api.get(`profiles/${profileName}/monsters/`, {
+      monster__family_id__in: family_ids.join(","),
+    });
 
     commit(
       "updateEntities",
-      normalize(family_results, [schema.monsterInstance])
+      normalize(response.results, [schema.monsterInstance])
     );
 
-    const family_monster_ids = family_results
-      .filter(mInstance => mInstance.id !== id)
-      .map(mInstance => mInstance.monster);
+    const family_monster_ids = [
+      ...new Set(
+        response.results
+          .filter(mInstance => mInstance.id !== id)
+          .map(mInstance => mInstance.monster)
+      ),
+    ];
 
     await Promise.all(
       family_monster_ids.map(fam_id =>
