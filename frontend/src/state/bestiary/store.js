@@ -1,8 +1,8 @@
 import { normalize, denormalize } from "normalizr";
 
-import api from "@/services/api";
-import schema from "./schema";
 import { updateEntities } from "@/state/util";
+import { fetchMonster, fetchMonsters, fetchSkills } from "./api";
+import schema from "./schema";
 
 const state = {
   entities: {
@@ -23,8 +23,8 @@ const actions = {
     const monster = await dispatch("getMonster", id);
 
     // Fetch skills
-    const { results: skills } = await api.get(`skills/`, {
-      id__in: monster.skills,
+    const { results: skills } = await fetchSkills({
+      id__in: monster.skills.join(","),
     });
     commit("updateEntities", normalize(skills, [schema.skill]));
 
@@ -34,18 +34,22 @@ const actions = {
       monster.awakens_from,
       monster.transforms_into,
     ].filter(r => Boolean(r));
-    console.log(relatedIds);
-    const { results: relatedMonsters } = await api.get(`monsters/`, {
-      id__in: relatedIds.join(","),
-    });
-    commit("updateEntities", normalize(relatedMonsters, [schema.monster]));
+    await dispatch("getMonsters", relatedIds);
   },
+
   async getMonster({ commit }, id) {
     // Fetch monster
-    const monster = await api.get(`monsters/${id}/`);
+    const monster = await fetchMonster(id);
     commit("updateEntities", normalize(monster, schema.monster));
-
     return monster;
+  },
+
+  async getMonsters({ commit }, ids) {
+    const { results: monsters } = await fetchMonsters({
+      id__in: ids.join(","),
+    });
+    commit("updateEntities", normalize(monsters, [schema.monster]));
+    return monsters;
   },
 };
 const getters = {

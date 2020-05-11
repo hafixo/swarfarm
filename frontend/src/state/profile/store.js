@@ -1,9 +1,9 @@
 import { normalize, denormalize } from "normalizr";
 
-import api from "@/services/api";
 import { updateEntities } from "@/state/util";
 import { getFamilyIds } from "@/services/monsters";
 
+import { fetchMonsterInstance, fetchMonsterInstances } from "./api";
 import schema from "./schema";
 
 const state = {
@@ -48,7 +48,7 @@ const actions = {
     profileName = profileName || state.profileName;
     id = id || state.monsterInstanceId;
 
-    const mInstance = await api.get(`profiles/${profileName}/monsters/${id}/`);
+    const mInstance = await fetchMonsterInstance(profileName, id);
     commit("updateEntities", normalize(mInstance, schema.monsterInstance));
 
     return mInstance;
@@ -64,7 +64,7 @@ const actions = {
     const monster_instance = getters.monsterInstance(id);
     const family_ids = getFamilyIds(monster_instance.monster.family_id);
 
-    const response = await api.get(`profiles/${profileName}/monsters/`, {
+    const response = await fetchMonsterInstances(profileName, {
       monster__family_id__in: family_ids.join(","),
     });
 
@@ -81,13 +81,9 @@ const actions = {
       ),
     ];
 
-    await Promise.all(
-      family_monster_ids.map(fam_id =>
-        dispatch("bestiary/getMonster", fam_id, {
-          root: true,
-        })
-      )
-    );
+    await dispatch("bestiary/getMonsters", family_monster_ids, {
+      root: true,
+    });
   },
 };
 

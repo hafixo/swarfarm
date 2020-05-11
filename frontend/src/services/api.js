@@ -1,34 +1,41 @@
+import { setup } from "axios-cache-adapter";
+
 const apiRoot =
   process.env.NODE_ENV === "development"
     ? "http://127.0.0.1:8000/api/v2"
     : "https://swarfarm.com/api/v2";
 
-async function get(path, query_params = {}) {
-  const url = new URL(`${apiRoot}/${path}`);
-  Object.keys(query_params).forEach(key =>
-    url.searchParams.append(key, query_params[key])
-  );
-  console.debug(`Sending request to ${url}`);
-  const response = await fetch(url, {
-    credentials: "same-origin",
-  });
-  return await response.json();
-}
-
-async function post(path, data = {}) {
-  const response = await fetch(`${apiRoot}/${path}`, {
-    method: "POST",
-    cedentials: "same-origin",
-    headers: {
-      "Content-Type": "application/json",
+const api = setup({
+  baseURL: apiRoot,
+  withCredentials: true,
+  cache: {
+    maxAge: 15 * 60 * 1000,
+    exclude: {
+      query: false,
+      filter: config => config.url.startsWith("/profiles"),
     },
-    body: JSON.stringify(data),
-  });
+  },
+});
 
-  return await response.json();
+if (process.env.NODE_ENV === "development") {
+  api.interceptors.response.use(
+    function(response) {
+      const params = response.config.params
+        ? Object.keys(response.config.params)
+            .map(key => `${key}=${response.config.params[key]}`)
+            .join(",")
+        : "";
+      const cache_hit = response.request.fromCache ? "cache-hit" : "cache-miss";
+      console.debug(
+        `API ${cache_hit}: ${response.config.url}${params ? "?" : ""}${params}`
+      );
+      return response;
+    },
+    function(error) {
+      console.debug(error);
+      return Promise.reject(error);
+    }
+  );
 }
 
-export default {
-  get,
-  post,
-};
+export default api;
