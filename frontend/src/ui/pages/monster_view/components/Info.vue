@@ -41,7 +41,7 @@
           <td>Awakens to</td>
           <td>
             <a :href="`/bestiary/${awakensTo.bestiary_slug}/`" target="_blank">
-              <Portrait small :monster="awakensTo" :stars="awakensTo.base_stars" />
+              <SmallPortrait :monster="awakensTo" />
             </a>
             {{ monster.awaken_bonus }}
           </td>

@@ -1,7 +1,12 @@
 <template>
   <span class="monster-image">
     <img :src="imageUrl" :alt="monster.name" class="monster-thumb" />
-    <Stars :count="stars" :awaken-level="monster.awaken_level" :can-awaken="monster.can_awaken" />
+    <Stars
+      v-if="stars"
+      :count="stars"
+      :awaken-level="monster.awaken_level"
+      :can-awaken="monster.can_awaken"
+    />
 
     <span v-if="level" class="image-plus image-plus-right">{{ maxLevel }}{{ level }}</span>
 
@@ -19,7 +24,7 @@ export default {
   props: {
     monster: Object,
     level: { type: Number, required: false },
-    stars: { type: Number, default: 1 },
+    stars: { type: Number, required: false },
     locked: { type: Boolean, default: false }
   },
   components: {
