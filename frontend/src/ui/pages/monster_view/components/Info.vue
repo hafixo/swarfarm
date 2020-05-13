@@ -111,9 +111,7 @@ import { priorityDisplay } from "@/services/monster_instances";
 
 export default {
   props: {
-    owner: { type: String, required: true },
-    instance: { type: Object, required: true },
-    skill_ups_remaining: { type: Number, required: false }
+    instance: { type: Object, required: true }
   },
   components: {
     Portrait,
@@ -140,6 +138,19 @@ export default {
     },
     family() {
       return this.$store.getters["profile/family"];
+    },
+    skill_ups_remaining() {
+      const skill_levels = [
+        this.instance.skill_1_level,
+        this.instance.skill_2_level,
+        this.instance.skill_3_level,
+        this.instance.skill_4_level
+      ];
+
+      return this.instance.monster.skills.reduce(
+        (accum, s, index) => accum + s.max_level - skill_levels[index],
+        0
+      );
     }
   },
   methods: {

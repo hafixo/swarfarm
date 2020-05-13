@@ -3,7 +3,11 @@
 </template>
 
 <script>
-export default {};
+export default {
+  props: {
+    instance: { type: Object, required: true }
+  }
+};
 </script>
 
 <style>

@@ -18,7 +18,6 @@ export default {
     LeaderSkillPanel
   },
   props: {
-    owner: { type: String, required: true },
     instance: { type: Object, required: true }
   },
   computed: {

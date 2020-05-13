@@ -2,25 +2,21 @@
   <div v-if="loaded">
     <div class="row">
       <div class="col-lg-6">
-        <Info
-          :owner="owner"
-          :instance="monsterInstance"
-          :skill_ups_remaining="skill_ups_remaining"
-        />
+        <Info :instance="monsterInstance" />
       </div>
       <div class="col-lg-6">
-        <Runes />
+        <Skills :instance="monsterInstance" />
       </div>
     </div>
-    <Stats :owner="owner" :instance="monsterInstance" />
-    <Skills :owner="owner" :instance="monsterInstance" />
+
+    <Build :instance="monsterInstance" />
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters, mapMutations } from "vuex";
 
-import { Info, Runes, Skills, Stats } from "./components";
+import { Info, Skills, Build } from "./components";
 
 export default {
   name: "App",
@@ -30,9 +26,8 @@ export default {
   },
   components: {
     Info,
-    Runes,
     Skills,
-    Stats
+    Build
   },
   data() {
     return {
@@ -55,27 +50,7 @@ export default {
   computed: {
     ...mapGetters("profile", {
       monsterInstance: "viewedMonsterInstance"
-    }),
-    skills() {
-      return this.loaded ? this.monsterInstance.monster.skills : null;
-    },
-    skill_ups_remaining() {
-      if (!this.loaded) {
-        return null;
-      }
-
-      const skill_levels = [
-        this.monsterInstance.skill_1_level,
-        this.monsterInstance.skill_2_level,
-        this.monsterInstance.skill_3_level,
-        this.monsterInstance.skill_4_level
-      ];
-
-      return this.skills.reduce(
-        (accum, s, index) => accum + s.max_level - skill_levels[index],
-        0
-      );
-    }
+    })
   }
 };
 </script>
