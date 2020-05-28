@@ -1,11 +1,14 @@
 <template>
-  <div class="row">
-    <div v-if="instance.monster.leader_skill" class="col-xs-12">
+  <div>
+    <div v-if="instance.monster.leader_skill">
       <LeaderSkillPanel :skill="instance.monster.leader_skill" />
     </div>
-    <div v-for="(skill, idx) in instance.monster.skills" :key="skill.id" :class="columnSize">
-      <SkillPanel :skill="skill" :level="levels[idx]" />
-    </div>
+    <SkillPanel
+      v-for="(skill, idx) in instance.monster.skills"
+      :key="skill.id"
+      :skill="skill"
+      :level="levels[idx]"
+    />
   </div>
 </template>
 
@@ -21,9 +24,6 @@ export default {
     instance: { type: Object, required: true }
   },
   computed: {
-    columnSize() {
-      return this.instance.monster.skills.length < 4 ? "col-lg-4" : "col-lg-3";
-    },
     levels() {
       return [
         this.instance.skill_1_level,
