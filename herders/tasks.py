@@ -1,4 +1,5 @@
 from celery import shared_task, current_task, states
+from django.core.exceptions import ValidationError
 from django.core.mail import mail_admins
 from django.db import transaction
 from django.db.models.signals import post_save
@@ -149,8 +150,16 @@ def com2us_data_import(data, user_id, import_options):
             assignments[mon_com2us_id].append(assignment['rune_id'])
 
         for mon_id, rune_ids in assignments.items():
-            mon = MonsterInstance.objects.get(com2us_id=mon_id)
-            mon.rta_build.runes.set(RuneInstance.objects.filter(com2us_id__in=rune_ids))
+            mon = MonsterInstance.objects.filter(owner=summoner).get(com2us_id=mon_id)
+            runes = RuneInstance.objects.filter(owner=summoner, com2us_id__in=rune_ids)
+            try:
+                mon.rta_build.runes.set(runes)
+            except ValidationError:
+                slots = runes.values_list('slot', flat=True)
+                mail_admins('Rune Build Validation Error', f'monster: {mon.id}\r\nrunes: {rune_ids}\r\nslots: {slots}')
+
+                # Continue with import so it doesn't fail
+                continue
 
     if not current_task.request.called_directly:
         current_task.update_state(state=states.STARTED, meta={'step': 'crafts'})
@@ -170,13 +179,3 @@ def com2us_data_import(data, user_id, import_options):
         if import_options['delete_missing_runes']:
             RuneInstance.objects.filter(owner=summoner).exclude(pk__in=imported_runes).delete()
             RuneCraftInstance.objects.filter(owner=summoner).exclude(pk__in=imported_crafts).delete()
-
-
-@shared_task
-def resave_monsters_with_no_rune_build():
-    mons = MonsterInstance.objects.filter(default_build__isnull=True).order_by()[:1000]
-    for m in mons:
-        try:
-            m.save()
-        except:
-            mail_admins('TASK FAILURE: Resave Monsters With No Rune Build', f'Failed to save monster {m.pk}')

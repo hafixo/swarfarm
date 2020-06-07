@@ -431,9 +431,9 @@ class MonsterInstance(models.Model, base.Stars):
                 'defense': self.monster.actual_defense(6, 40),
             },
             'rune': {
-                'hp': self.max_rune_stats.get(RuneInstance.STAT_HP, 0),
-                'attack': self.max_rune_stats.get(RuneInstance.STAT_ATK, 0),
-                'defense': self.max_rune_stats.get(RuneInstance.STAT_DEF, 0),
+                'hp': max_rune_stats.get(RuneInstance.STAT_HP, 0),
+                'attack': max_rune_stats.get(RuneInstance.STAT_ATK, 0),
+                'defense': max_rune_stats.get(RuneInstance.STAT_DEF, 0),
             },
         }
 
