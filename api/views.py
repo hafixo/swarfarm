@@ -28,7 +28,6 @@ class BestiarySetPagination(PageNumberPagination):
 # Django REST framework views
 class MonsterViewSet(CacheResponseMixin, viewsets.ReadOnlyModelViewSet):
     queryset = Monster.objects.all()
-    renderer_classes = (renderers.BrowsableAPIRenderer, renderers.JSONRenderer)
     filter_backends = (filters.DjangoFilterBackend,)
     filter_fields = ('name', 'element', 'archetype', 'base_stars', 'natural_stars', 'obtainable', 'is_awakened', 'com2us_id', 'family_id', 'homunculus')
 
@@ -78,7 +77,7 @@ class MonsterInstanceViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = MonsterInstance.objects.none()
     serializer_class = MonsterInstanceSerializer
     pagination_class = PersonalCollectionSetPagination
-    renderer_classes = (renderers.BrowsableAPIRenderer, renderers.JSONRenderer, renderers.TemplateHTMLRenderer)
+    renderer_classes = (renderers.JSONRenderer, renderers.TemplateHTMLRenderer)
 
     def get_queryset(self):
         # We do not want to allow retrieving all instances
@@ -101,7 +100,7 @@ class RuneInstanceViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = RuneInstance.objects.none()
     serializer_class = RuneInstanceSerializer
     pagination_class = PersonalCollectionSetPagination
-    renderer_classes = (renderers.BrowsableAPIRenderer, renderers.JSONRenderer, renderers.TemplateHTMLRenderer)
+    renderer_classes = (renderers.JSONRenderer, renderers.TemplateHTMLRenderer)
 
     def get_queryset(self):
         # We do not want to allow retrieving all instances

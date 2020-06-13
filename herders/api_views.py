@@ -5,7 +5,6 @@ from rest_framework import viewsets, status
 from rest_framework.filters import OrderingFilter
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 
 from herders.api_filters import SummonerFilter, MonsterInstanceFilter, RuneInstanceFilter, TeamFilter
@@ -252,7 +251,6 @@ class TeamGroupViewSet(ProfileItemMixin, viewsets.ModelViewSet):
 class TeamViewSet(ProfileItemMixin, viewsets.ModelViewSet):
     queryset = Team.objects.all().select_related('group', 'leader').prefetch_related('leader__runeinstance_set', 'roster', 'roster__runeinstance_set')
     serializer_class = TeamSerializer
-    renderer_classes = [JSONRenderer]  # Browseable API causes major query explosion when trying to generate form options.
     filter_backends = (filters.DjangoFilterBackend, OrderingFilter)
     filter_class = TeamFilter
 

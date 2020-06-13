@@ -1,7 +1,6 @@
 import json
 
 from rest_framework import viewsets, permissions, versioning, exceptions, parsers
-from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 
 from herders.models import Summoner
@@ -74,7 +73,6 @@ class LogData(viewsets.ViewSet):
 class AcceptedCommands(viewsets.ViewSet):
     permission_classes = (permissions.AllowAny, )
     versioning_class = versioning.QueryParameterVersioning  # Ignore default of namespaced based versioning and use default version defined in settings
-    renderer_classes = (JSONRenderer, )
 
     def list(self, request):
         return Response(accepted_api_params)
