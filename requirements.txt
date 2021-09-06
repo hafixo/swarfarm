@@ -1,4 +1,4 @@
-Django==2.2.15
+Django==2.2.18
 gunicorn
 eventlet
 psycopg2-binary
