@@ -1,4 +1,4 @@
-Django==2.2.15
+Django==2.2.24
 gunicorn
 eventlet
 psycopg2-binary
@@ -15,7 +15,7 @@ python-dateutil
 pycryptodome
 redis
 requests
-pillow==6.2.1
+pillow==8.3.2
 sympy>=1.0.0
 django-autocomplete-light==3.3.2
 django-celery-results
@@ -24,14 +24,14 @@ django_compressor
 django-cors-headers
 django-crispy-forms==1.7.2
 django-environ
-django-filter==2.0.0
+django-filter==2.4.0
 django-markdown-deux
 django-pivot
 django-recaptcha
 django-redis-cache
 Django-Select2
 django-timezone-field==2.0.0
-djangorestframework==3.9.4
+djangorestframework==3.11.2
 djangorestframework-jwt
 djangorestframework-jwt-refresh-token==0.2
 drf-extensions
